@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiển thị dữ liệu từ API</title>
+</head>
+<body>
+    <h1>Dữ liệu từ API</h1>
+    <div id="temperature"></div>
+    <div id="humidity"></div>
+    <div id="images"></div>
+
+    <script>
+        // Hàm để lấy dữ liệu từ API
+        async function fetchData() {
+            try {
+                const response = await fetch('https://dat.inotev.net/api/getDataD2101.php');
+                const data = await response.json();
+
+                // Hiển thị dữ liệu nhiệt độ và độ ẩm
+                document.getElementById('temperature').innerText = `Nhiệt độ: ${data.temperature_data.temperature}°C`;
+                document.getElementById('humidity').innerText = `Độ ẩm: ${data.temperature_data.humidity}%`;
+
+                // Hiển thị các hình ảnh
+                const imagesDiv = document.getElementById('images');
+                data.image_data.forEach(image => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = image.url;
+                    imgElement.alt = 'Hình ảnh từ API';
+                    imgElement.style.width = '300px'; // Điều chỉnh kích thước hình ảnh theo ý muốn
+                    imgElement.style.margin = '10px';
+                    imagesDiv.appendChild(imgElement);
+                });
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu từ API:', error);
+            }
+        }
+
+        // Gọi hàm fetchData để lấy dữ liệu khi tải trang
+        fetchData();
+    </script>
+</body>
+</html>

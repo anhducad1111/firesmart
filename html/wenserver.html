@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<!--    <script>
+
+        if (sessionStorage.getItem('loggedIn')) {
+            window.location.href = 'login.html';
+        }
+    </script>   -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr; /* 3 columns with equal width */
+      grid-template-rows: 1fr 1fr 1fr; /* 3 rows with equal height */
+      height: 100vh; /* Set the height of the grid container to the full viewport height */
+    }
+
+    /* Combine the first three rows into one */
+    .combined-row {
+      grid-column: span 3; /* Span 3 columns */
+      grid-row: span 1;    /* Span 1 row */
+      background-color: #b8b0b0; /* Optional background color */
+      font-size: 48px;
+      background-color: #0D1282;
+      font-family: 'Kdam Thmor Pro', sans-serif;
+      color: #fff;
+    }
+
+    /* Additional styles for the individual cells */
+    .grid-item {
+      border: 1px solid #0b0b0b;
+      box-sizing: border-box;
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+      text-align: center;
+    }
+    .flex-container-1 {
+      flex: 1; /* Takes up 1/3 of the available space */
+      min-width: 260px;
+      background-color: #F0DE36;
+      box-sizing: border-box;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    h2{
+      color: #000000;
+    }
+
+    .flex-container-2 {
+      flex: 2; /* Takes up 2/3 of the available space */
+      box-sizing: border-box;
+      border: 1px solid #333;
+      background-color: #D71313;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      align-self: center;
+    }
+
+
+    .temperature {
+      margin: 10px;
+      font-size: 20px;
+      color: #000000;
+    }
+
+    h1 {
+            color:#000000;
+        }
+
+    #data-container {
+            background-color: #EEEDED;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: 0 ;
+            padding:0 ;
+        }
+
+  .button {
+  --offset: 10px;
+  --border-size: 2px;
+  display: block;
+  position: relative;
+  padding: 1.5em 3em;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #f8e2df;
+  text-transform: uppercase;
+  letter-spacing: .25em;
+  outline: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 var(--border-size);
+  width: 100%;
+  margin-top: 20px;
+}
+
+
+    .temperature {
+      margin: 10px;
+      font-size: 35px;
+      font-weight: 700;
+
+    }
+
+input[type="checkbox"] {
+  margin:10px;
+  position:relative;
+  width:120px;
+  height:40px;
+  -webkit-appearance: none;
+  background: linear-gradient(0deg, #333, #000);
+  outline: none;
+  border-radius: 20px;
+  box-shadow: 0 0 0 4px #353535, 0 0 0 5px #3e3e3e, inset 0 0 10px rgba(0,0,0,1);
+}
+
+input:checked[type="checkbox"]:nth-of-type(1) {
+  background: linear-gradient(0deg, #70a1ff, #1e90ff);
+  box-shadow: 0 0 0 4px #353535, 0 0 0 5px #3e3e3e, inset 0 0 10px rgba(0,0,0,1);
+}
+
+input:checked[type="checkbox"]:nth-of-type(2) {
+  background: linear-gradient(0deg, #70a1ff, #1e90ff);
+  box-shadow: 0 0 0 4px #353535, 0 0 0 5px #3e3e3e, inset 0 0 10px rgba(0,0,0,1);
+}
+
+input[type="checkbox"]:before {
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:80px;
+  height:40px;
+  background: linear-gradient(0deg, #000, #6b6b6b);
+  border-radius: 20px;
+  box-shadow: 0 0 0 1px #232323;
+  transform: scale(.98,.96);
+  transition:.5s;
+}
+
+input:checked[type="checkbox"]:before {
+  left:40px;
+}
+
+input[type="checkbox"]:after{
+  content:'';
+  position:absolute;
+  top:calc(50% - 2px);
+  left:70px;
+  width:4px;
+  height:4px;
+  background: linear-gradient(0deg, #f8f7f7, #000);
+  border-radius: 50%;
+  transition:.5s;
+}
+
+input:checked[type="checkbox"]:after {
+  left:110px;
+}
+
+.nameH1{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  text-align:center;
+  color:#000000;
+  font-size:16px;
+  padding:15px 0;
+  text-transform: uppercase;
+  letter-spacing:4px;
+}
+
+.overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal {
+      background: #f4f2f2;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .checkbox-wrapper-35 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+ /* Set the height to 100% of the viewport height */
+}
+
+    .checkbox-wrapper-35 .switch {
+  display: none;
+}
+
+.checkbox-wrapper-35 .switch + label {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: #78768d;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 15px;
+  position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.checkbox-wrapper-35 .switch + label::before,
+  .checkbox-wrapper-35 .switch + label::after {
+  content: '';
+  display: block;
+}
+
+.checkbox-wrapper-35 .switch + label::before {
+  background-color: #05012c;
+  border-radius: 500px;
+  height: 15px;
+  margin-right: 8px;
+  -webkit-transition: background-color 0.125s ease-out;
+  transition: background-color 0.125s ease-out;
+  width: 25px;
+}
+
+.checkbox-wrapper-35 .switch + label::after {
+  background-color: #fff;
+  border-radius: 13px;
+  box-shadow: 0 3px 1px 0 rgba(37, 34, 71, 0.05), 0 2px 2px 0 rgba(37, 34, 71, 0.1), 0 3px 3px 0 rgba(37, 34, 71, 0.05);
+  height: 13px;
+  left: 1px;
+  position: absolute;
+  top: 1px;
+  -webkit-transition: -webkit-transform 0.125s ease-out;
+  transition: -webkit-transform 0.125s ease-out;
+  transition: transform 0.125s ease-out;
+  transition: transform 0.125s ease-out, -webkit-transform 0.125s ease-out;
+  width: 13px;
+}
+
+.checkbox-wrapper-35 .switch + label .switch-x-text {
+  display: block;
+  margin-right: .3em;
+}
+
+.checkbox-wrapper-35 .switch + label .switch-x-toggletext {
+  display: block;
+  font-weight: bold;
+  height: 15px;
+  overflow: hidden;
+  position: relative;
+  width: 25px;
+}
+
+.checkbox-wrapper-35 .switch + label .switch-x-unchecked,
+  .checkbox-wrapper-35 .switch + label .switch-x-checked {
+  left: 0;
+  position: absolute;
+  top: 0;
+  -webkit-transition: opacity 0.125s ease-out, -webkit-transform 0.125s ease-out;
+  transition: opacity 0.125s ease-out, -webkit-transform 0.125s ease-out;
+  transition: transform 0.125s ease-out, opacity 0.125s ease-out;
+  transition: transform 0.125s ease-out, opacity 0.125s ease-out, -webkit-transform 0.125s ease-out;
+}
+
+.checkbox-wrapper-35 .switch + label .switch-x-unchecked {
+  opacity: 1;
+  -webkit-transform: none;
+  transform: none;
+}
+
+.checkbox-wrapper-35 .switch + label .switch-x-checked {
+  opacity: 0;
+  -webkit-transform: translate3d(0, 100%, 0);
+  transform: translate3d(0, 100%, 0);
+}
+
+.checkbox-wrapper-35 .switch + label .switch-x-hiddenlabel {
+  position: absolute;
+  visibility: hidden;
+}
+
+.checkbox-wrapper-35 .switch:checked + label::before {
+  background-color: #1e90ff;
+}
+
+.checkbox-wrapper-35 .switch:checked + label::after {
+  -webkit-transform: translate3d(10px, 0, 0);
+  transform: translate3d(10px, 0, 0);
+}
+
+.checkbox-wrapper-35 .switch:checked + label .switch-x-unchecked {
+  opacity: 0;
+  -webkit-transform: translate3d(0, -100%, 0);
+  transform: translate3d(0, -100%, 0);
+}
+
+.checkbox-wrapper-35 .switch:checked + label .switch-x-checked {
+  opacity: 1;
+  -webkit-transform: none;
+  transform: none;
+}
+
+
+    @media only screen and (max-width: 480px) {
+  body {
+    grid-template-columns: 1fr; /* Chuyển đổi thành 1 cột cho màn hình nhỏ hơn hoặc bằng 480px */
+  }
+
+  .grid-item {
+    grid-column: span 1; /* Span 1 cột */
+    grid-row: span 1;    /* Span 1 dòng */
+  }
+
+  .combined-row {
+    font-size: 12px;
+    height: fit-content; /* Điều chỉnh kích thước chữ cho màn hình nhỏ hơn hoặc bằng 480px */
+  }
+
+  .flex-container-2 {
+    align-items: center;
+    justify-content: center;
+    text-align: center; /* Căn giữa nội dung trong .flex-container-2 */
+  }
+
+  .button {
+    margin-top: 10px; /* Thêm khoảng cách trên cho button */
+  }
+  }
+  .button-group {
+        display: flex;
+        align-items: center;
+        margin: 40px;
+        background-color: #F0DE36;
+
+    }
+
+    .button-group button {
+
+    width: 40px; /* Điều chỉnh chiều rộng của nút */
+    height: 40px; /* Điều chỉnh chiều cao của nút */
+    font-size: 18px;
+    background-color: #f71616;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+#indexDisplayd2101 {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 5px;
+}
+  </style>
+
+</head>
+<body>
+
+  <!-- Grid Container -->
+  <div class="grid-item combined-row">AUTOMATIC TEMPERATURE AND HUMIDITY ADJUSTMENT SYSTEM</div>
+  <div class="grid-item">
+    <div class="flex-container-1">
+    <div class="checkbox-wrapper-35">
+    <input value="private" name="switchD2101" id="auto-D2101" onchange="AutoAirConditionerStateD2101()" type="checkbox" class="switch">
+    <label for="auto-D2101">
+    <span class="switch-x-text">AUTOMATIC Mode</span>
+    <span class="switch-x-toggletext">
+      <span class="switch-x-unchecked"><span class="switch-x-hiddenlabel">Unchecked: </span>Off</span>
+      <span class="switch-x-checked"><span class="switch-x-hiddenlabel">Checked: </span>On</span>
+    </span>
+    </label>
+    </div>
+
+        <h2>Room</h2>
+        <h1>D2-101</h1>
+        <div class="center">
+          <h1 class="nameH1"> Air Conditioner </h1>
+          <input type="checkbox" id="ACCheckboxD2101" name="" onchange="AirConditionerStateD2101()">
+          <!-- <h1 class="nameH1"> Dehumidifier </h1>
+          <input type="checkbox" name=""> -->
+          <div class="button-group">
+            <button onclick="decrementIndex()">-</button>
+            <span id="indexDisplayd2101">25°C</span>
+            <button onclick="incrementIndex()">+</button>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="flex-container-2">
+            <h2>Temperature</h2>
+            <div class="temperature" id="data-container"><p id="temperatureD2101">...</p></div>
+
+            <h2>Humidity</h2>
+            <div class="temperature" id="data-container"><p id="humidityD2101">...</p></div>
+              <button class="button" onclick="openOverlay1()" >
+              <a style="text-decoration: none;color: #efebea;">Display Chart</a>
+              </button>
+     </div>
+  </div>
+  <div class="grid-item">
+    <div class="flex-container-1">
+      <div class="checkbox-wrapper-35">
+        <input value="private" name="switchD2102" id="auto-D2102" onchange="AutoAirConditionerStateD2102()" type="checkbox" class="switch">
+        <label for="auto-D2102">
+        <span class="switch-x-text">AUTOMATIC Mode</span>
+        <span class="switch-x-toggletext">
+          <span class="switch-x-unchecked"><span class="switch-x-hiddenlabel">Unchecked: </span>Off</span>
+          <span class="switch-x-checked"><span class="switch-x-hiddenlabel">Checked: </span>On</span>
+        </span>
+        </label>
+        </div>
+        <h2>Room</h2>
+        <h1>D2-102</h1>
+        <div class="center">
+          <h1 class="nameH1"> Air Conditioner </h1>
+          <input type="checkbox" id="ACCheckboxD2102" name="" onchange="AirConditionerStateD2102()">
+          <!-- <h1 class="nameH1"> Dehumidifier </h1>
+          <input type="checkbox" name=""> -->
+          <div class="button-group">
+            <button onclick="decrementIndex2()">-</button>
+            <span id="indexDisplayd2102">25°C</span>
+            <button onclick="incrementIndex2()">+</button>
+          </div>
+        </div>
+
+    </div>
+    <div class="flex-container-2">
+            <h2>Temperature</h2>
+            <div class="temperature" id="data-container"><p id="temperatureD2102">...</p></div>
+
+            <h2>Humidity</h2>
+            <div class="temperature" id="data-container"><p id="humidityD2102">...</p></div>
+              <button class="button" onclick="openOverlay2()" >
+              <a style="text-decoration: none;color: #efebea;">Display Chart</a>
+              </button>
+    </div>
+
+
+  </div>
+  <div class="grid-item">
+    <div class="flex-container-1">
+      <div class="checkbox-wrapper-35">
+        <input value="private" name="switchD2103" id="auto-D2103" onchange="AutoAirConditionerStateD2103()"type="checkbox" class="switch">
+        <label for="auto-D2103">
+        <span class="switch-x-text">AUTOMATIC Mode</span>
+        <span class="switch-x-toggletext">
+          <span class="switch-x-unchecked"><span class="switch-x-hiddenlabel">Unchecked: </span>Off</span>
+          <span class="switch-x-checked"><span class="switch-x-hiddenlabel">Checked: </span>On</span>
+        </span>
+        </label>
+        </div>
+        <h2>Room</h2>
+        <h1>D2-103</h1>
+        <div class="center">
+          <h1 class="nameH1"> Air Conditioner </h1>
+          <input type="checkbox" id="ACCheckboxD2103" name="" onchange="AirConditionerStateD2103()">
+          <!-- <h1 class="nameH1"> Dehumidifier </h1>
+          <input type="checkbox" name=""> -->
+          <div class="button-group">
+            <button onclick="decrementIndex3()">-</button>
+            <span id="indexDisplayd2103">25°C</span>
+            <button onclick="incrementIndex3()">+</button>
+          </div>
+        </div>
+
+    </div>
+    <div class="flex-container-2">
+            <h2>Temperature</h2>
+            <div class="temperature" id="data-container"><p id="temperatureD2103">...</p></div>
+
+            <h2>Humidity</h2>
+            <div class="temperature" id="data-container"><p id="humidityD2103">...</p></div>
+              <button class="button" onclick="openOverlay3()" >
+              <a style="text-decoration: none;color: #efebea;">Display Chart</a>
+              </button>
+
+    </div>
+  </div>
+  <div class="grid-item">
+    <div class="flex-container-1">
+      <div class="checkbox-wrapper-35">
+        <input value="private" name="switchD2104" id="auto-D2104" onchange="AutoAirConditionerStateD2104()" type="checkbox" class="switch">
+        <label for="auto-D2104">
+        <span class="switch-x-text">AUTOMATIC Mode</span>
+        <span class="switch-x-toggletext">
+          <span class="switch-x-unchecked"><span class="switch-x-hiddenlabel">Unchecked: </span>Off</span>
+          <span class="switch-x-checked"><span class="switch-x-hiddenlabel">Checked: </span>On</span>
+        </span>
+        </label>
+        </div>
+        <h2>Room</h2>
+        <h1>D2-104</h1>
+        <div class="center">
+          <h1 class="nameH1"> Air Conditioner </h1>
+          <input type="checkbox" id="ACCheckboxD2104" name="" onchange="AirConditionerStateD2104()">
+          <!-- <h1 class="nameH1"> Dehumidifier </h1>
+          <input type="checkbox" name=""> -->
+          <div class="button-group">
+            <button onclick="decrementIndex4()">-</button>
+            <span id="indexDisplayd2104">25°C</span>
+            <button onclick="incrementIndex4()">+</button>
+          </div>
+        </div>
+
+    </div>
+    <div class="flex-container-2">
+            <h2>Temperature</h2>
+            <div class="temperature" id="data-container"><p id="temperatureD2104">...</p></div>
+
+            <h2>Humidity</h2>
+            <div class="temperature" id="data-container"><p id="humidityD2104">...</p></div>
+              <button class="button" onclick="openOverlay4()" >
+              <a style="text-decoration: none;color: #efebea;">Display Chart</a>
+              </button>
+
+    </div>
+  </div>
+  <div class="grid-item">
+    <div class="flex-container-1">
+      <div class="checkbox-wrapper-35">
+        <input value="private" name="switchD2201" id="auto-D2201" onchange="AutoAirConditionerStateD2201()" type="checkbox" class="switch">
+        <label for="auto-D2201">
+        <span class="switch-x-text">AUTOMATIC Mode</span>
+        <span class="switch-x-toggletext">
+          <span class="switch-x-unchecked"><span class="switch-x-hiddenlabel">Unchecked: </span>Off</span>
+          <span class="switch-x-checked"><span class="switch-x-hiddenlabel">Checked: </span>On</span>
+        </span>
+        </label>
+        </div>
+        <h2>Room</h2>
+        <h1>D2-201</h1>
+        <div class="center">
+          <h1 class="nameH1"> Air Conditioner </h1>
+          <input type="checkbox" id="ACCheckboxD2201" name="" onchange="AirConditionerStateD2201()">
+          <!-- <h1 class="nameH1"> Dehumidifier </h1>
+          <input type="checkbox" name=""> -->
+          <div class="button-group">
+            <button onclick="decrementIndex5()">-</button>
+            <span id="indexDisplayd2105">25°C</span>
+            <button onclick="incrementIndex5()">+</button>
+          </div>
+        </div>
+
+    </div>
+    <div class="flex-container-2">
+            <h2>Temperature</h2>
+            <div class="temperature" id="data-container"><p id="temperatureD2201">...</p></div>
+
+            <h2>Humidity</h2>
+            <div class="temperature" id="data-container"><p id="humidityD2201">...</p></div>
+              <button class="button" onclick="openOverlay5()" >
+              <a style="text-decoration: none;color: #efebea;">Display Chart</a>
+              </button>
+
+    </div>
+  </div>
+  <div class="grid-item">
+    <div class="flex-container-1">
+      <div class="checkbox-wrapper-35">
+        <input value="private" name="switchKB104" id="auto-KB104" onchange="AutoAirConditionerStateKB104()" type="checkbox" class="switch">
+        <label for="auto-KB104">
+        <span class="switch-x-text">AUTOMATIC Mode</span>
+        <span class="switch-x-toggletext">
+          <span class="switch-x-unchecked"><span class="switch-x-hiddenlabel">Unchecked: </span>Off</span>
+          <span class="switch-x-checked"><span class="switch-x-hiddenlabel">Checked: </span>On</span>
+        </span>
+        </label>
+      </div>
+        <h2>Room</h2>
+        <h1>K.B104</h1>
+        <div class="center">
+          <h1 class="nameH1"> Air Conditioner </h1>
+          <input type="checkbox" id="ACCheckboxKB104" name="" onchange="AirConditionerStateKB104()">
+          <!-- <h1 class="nameH1"> Dehumidifier </h1>
+          <input type="checkbox" name=""> -->
+          <div class="button-group">
+            <button onclick="decrementIndex6()">-</button>
+            <span id="indexDisplayd2106">25°C</span>
+            <button onclick="incrementIndex6()">+</button>
+          </div>
+        </div>
+
+    </div>
+    <div class="flex-container-2">
+            <h2>Temperature</h2>
+            <div class="temperature" id="data-container"><p id="temperatureKB104">...</p></div>
+
+            <h2>Humidity</h2>
+            <div class="temperature" id="data-container"><p id="humidityKB104">...</p></div>
+              <button class="button" onclick="openOverlay6()" >
+              <a style="text-decoration: none;color: #efebea;">Display Chart</a>
+              </button>
+
+    </div>
+  </div>
+  <div class="grid-item">
+    <div class="flex-container-1">
+      <div class="checkbox-wrapper-35">
+        <input value="private" name="switchKB105" id="auto-KB105" onchange="AutoAirConditionerStateKB105()" type="checkbox" class="switch">
+        <label for="auto-KB105">
+        <span class="switch-x-text">AUTOMATIC Mode</span>
+        <span class="switch-x-toggletext">
+          <span class="switch-x-unchecked"><span class="switch-x-hiddenlabel">Unchecked: </span>Off</span>
+          <span class="switch-x-checked"><span class="switch-x-hiddenlabel">Checked: </span>On</span>
+        </span>
+        </label>
+      </div>
+        <h2>Room</h2>
+        <h1>K.B105</h1>
+        <div class="center">
+          <h1 class="nameH1"> Air Conditioner </h1>
+          <input type="checkbox"  id="ACCheckboxKB105" name="" onchange="AirConditionerStateKB105()">
+          <!-- <h1 class="nameH1"> Dehumidifier </h1>
+          <input type="checkbox" name=""> -->
+          <div class="button-group">
+            <button onclick="decrementIndex7()">-</button>
+            <span id="indexDisplayd2107">25°C</span>
+            <button onclick="incrementIndex7()">+</button>
+          </div>
+        </div>
+
+    </div>
+    <div class="flex-container-2">
+            <h2>Temperature</h2>
+            <div class="temperature" id="data-container"><p id="temperatureKB105">...</p></div>
+
+            <h2>Humidity</h2>
+            <div class="temperature" id="data-container"><p id="humidityKB105">...</p></div>
+              <button class="button" onclick="openOverlay7()" >
+              <a style="text-decoration: none;color: #efebea;">Display Chart</a>
+              </button>
+
+    </div>
+  </div>
+
+  <div id="overlay1" class="overlay" onclick="closeOverlay1()">
+    <div class="modal" onclick="event.stopPropagation();">
+      <span class="close-btn" onclick="closeOverlay1()">&times;</span>
+      <h1 style="color: #000;">Data From Room: D2-101</h1>
+      <div id="data-container">
+          <canvas id="chartD2101" width="500" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="overlay2" class="overlay" onclick="closeOverlay2()">
+    <div class="modal" onclick="event.stopPropagation();">
+      <span class="close-btn" onclick="closeOverlay2()">&times;</span>
+      <h1 style="color: #000;">Data From Room: D2-102</h1>
+      <div id="data-container">
+          <canvas id="chartD2102" width="500" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay3" class="overlay" onclick="closeOverlay3()">
+    <div class="modal" onclick="event.stopPropagation();">
+      <span class="close-btn" onclick="closeOverlay3()">&times;</span>
+      <h1 style="color: #000;">Data From Room: D2-103</h1>
+      <div id="data-container">
+          <canvas id="chartD2103" width="500" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay4" class="overlay" onclick="closeOverlay4()">
+    <div class="modal" onclick="event.stopPropagation();">
+      <span class="close-btn" onclick="closeOverlay4()">&times;</span>
+      <h1 style="color: #000;">Data From Room: D2-104</h1>
+      <div id="data-container">
+          <canvas id="chartD2104" width="500" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay5" class="overlay" onclick="closeOverlay5()">
+    <div class="modal" onclick="event.stopPropagation();">
+      <span class="close-btn" onclick="closeOverlay5()">&times;</span>
+      <h1 style="color: #000;">Data From Room: D2-201</h1>
+      <div id="data-container">
+          <canvas id="chartD2201" width="500" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay6" class="overlay" onclick="closeOverlay6()">
+    <div class="modal" onclick="event.stopPropagation();">
+      <span class="close-btn" onclick="closeOverlay2()">&times;</span>
+      <h1 style="color: #000;">Data From Room: K.B104</h1>
+      <div id="data-container">
+          <canvas id="chartKB104" width="500" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay7" class="overlay" onclick="closeOverlay7()">
+    <div class="modal" onclick="event.stopPropagation();">
+      <span class="close-btn" onclick="closeOverlay7()">&times;</span>
+      <h1 style="color: #000;">Data From Room: K.B105</h1>
+      <div id="data-container">
+          <canvas id="chartKB105" width="500" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+
+  <script>
+    var temperatureDataD2101 = [];
+    var humidityDataD2101 = [];
+    var labelsD2101 = [];
+
+    var ctxD2101 = document.getElementById("chartD2101").getContext("2d");
+
+    var chartD2101 = new Chart(ctxD2101, {
+        type: "line",
+        data: {
+            labels: labelsD2101, // Initial labels for D2101
+            datasets: [
+                {
+                    label: "Temperature D2101 (°C)",
+                    data: temperatureDataD2101,
+                    borderColor: "rgba(255, 99, 132, 1)",
+                    fill: false,
+                },
+                {
+                    label: "Humidity D2101 (%)",
+                    data: humidityDataD2101,
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    fill: false,
+                },
+            ],
+        },
+    });
+    var ctxD2102 = document.getElementById("chartD2102").getContext("2d");
+
+
+    function getDataFromServerD2101() {
+
+        // Create an HTTP request
+        var xhr = new XMLHttpRequest();
+
+        // Set the method and URL of the request
+        xhr.open("GET", "https://dat.inotev.net/api/getDataD2101.php/", true);
+
+        // Handle when the request is complete
+        xhr.onload = function() {
+            // Check the status of the request
+            if (xhr.status == 200) {
+                // Parse the received JSON data into a JavaScript object
+                var data = JSON.parse(xhr.responseText);
+
+                // Process the data, for example: update the user interface
+                document.getElementById("temperatureD2101").innerText = data.temperature +"°C";
+                document.getElementById("humidityD2101").innerText = data.humidity + "%";
+                updateDataD2101(data);
+            } else {
+                console.error("Failed to fetch data");
+            }
+        };
+
+        // Send the request
+        xhr.send();
+    }
+
+    function getDataFromServerD2102() {
+
+    }
+
+    function getDataFromServerD2103() {
+
+    }
+
+    function getDataFromServerD2104() {
+
+    }
+
+    function getDataFromServerD2201() {
+
+    }
+
+    function getDataFromServerKB104() {
+
+    }
+
+    function getDataFromServerKB105() {
+
+    }
+
+    function updateDataD2101(dataD2101) {
+        var temperatureD2101 = document.getElementById("temperatureD2101");
+        var humidityD2101 = document.getElementById("humidityD2101");
+
+        temperatureD2101.innerHTML = dataD2101.temperature + "°C";
+        humidityD2101.innerHTML = dataD2101.humidity + "%";
+
+        // Thêm dữ liệu vào biểu đồ D2101
+        temperatureDataD2101.push(dataD2101.temperature);
+        humidityDataD2101.push(dataD2101.humidity);
+        labelsD2101.push(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", second: "numeric" }));
+        // labelsD2101.push(dataD2101.time);
+
+        // Giới hạn số lượng mẫu dữ liệu trên biểu đồ D2101
+        if (temperatureDataD2101.length > 20) {
+            temperatureDataD2101.shift();
+            humidityDataD2101.shift();
+            labelsD2101.shift();
+        }
+
+        // Cập nhật biểu đồ D2101
+        chartD2101.update();
+    }
+
+    // function updateDataD2102(dataD2102) {
+    //     var temperatureD2102 = document.getElementById("temperatureD2102");
+    //     var humidityD2102 = document.getElementById("humidityD2102");
+
+    //     temperatureD2102.innerHTML = dataD2102.temperature + "°C";
+    //     humidityD2102.innerHTML = dataD2102.humidity + "%";
+    //     // Thêm dữ liệu vào biểu đồ D2102
+    //     temperatureDataD2102.push(dataD2102.temperature);
+    //     humidityDataD2102.push(dataD2102.humidity);
+    //     labelsD2102.push(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", second: "numeric" }));
+
+    //     // Giới hạn số lượng mẫu dữ liệu trên biểu đồ D2102
+    //     if (temperatureDataD2102.length > 20) {
+    //         temperatureDataD2102.shift();
+    //         humidityDataD2102.shift();
+    //         labelsD2102.shift();
+    //     }
+
+    //     // Cập nhật biểu đồ D2102
+    //     chartD2102.update();
+    // }
+
+    // function updateDataD2103(dataD2103) {
+    //     var temperatureD2103 = document.getElementById("temperatureD2103");
+    //     var humidityD2103 = document.getElementById("humidityD2103");
+
+    //     temperatureD2103.innerHTML = dataD2103.temperature + "°C";
+    //     humidityD2103.innerHTML = dataD2103.humidity + "%";
+    //     // Thêm dữ liệu vào biểu đồ D2103
+    //     temperatureDataD2103.push(dataD2103.temperature);
+    //     humidityDataD2103.push(dataD2103.humidity);
+    //     labelsD2103.push(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", second: "numeric" }));
+
+    //     // Giới hạn số lượng mẫu dữ liệu trên biểu đồ D2103
+    //     if (temperatureDataD2103.length > 20) {
+    //         temperatureDataD2103.shift();
+    //         humidityDataD2103.shift();
+    //         labelsD2103.shift();
+    //     }
+
+    //     // Cập nhật biểu đồ D2103
+    //     chartD2103.update();
+    // }
+
+    // function updateDataD2104(dataD2104) {
+    //     var temperatureD2104 = document.getElementById("temperatureD2104");
+    //     var humidityD2104 = document.getElementById("humidityD2104");
+
+    //     temperatureD2104.innerHTML = dataD2104.temperature + "°C";
+    //     humidityD2104.innerHTML = dataD2104.humidity + "%";
+    //     // Thêm dữ liệu vào biểu đồ D2104
+    //     temperatureDataD2104.push(dataD2104.temperature);
+    //     humidityDataD2104.push(dataD2104.humidity);
+    //     labelsD2104.push(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", second: "numeric" }));
+
+    //     // Giới hạn số lượng mẫu dữ liệu trên biểu đồ D2104
+    //     if (temperatureDataD2104.length > 20) {
+    //         temperatureDataD2104.shift();
+    //         humidityDataD2104.shift();
+    //         labelsD2104.shift();
+    //     }
+
+    //     // Cập nhật biểu đồ D2103
+    //     chartD2104.update();
+    // }
+
+    // function updateDataD2201(dataD2201) {
+    //     var temperatureD2201 = document.getElementById("temperatureD2201");
+    //     var humidityD2201 = document.getElementById("humidityD2201");
+
+    //     temperatureD2201.innerHTML = dataD2201.temperature + "°C";
+    //     humidityD2201.innerHTML = dataD2201.humidity + "%";
+    //     // Thêm dữ liệu vào biểu đồ D2201
+    //     temperatureDataD2201.push(dataD2201.temperature);
+    //     humidityDataD2201.push(dataD2201.humidity);
+    //     labelsD2201.push(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", second: "numeric" }));
+    //     // labelsD2201.push(dataD2201.timedata, { hour: "numeric", minute: "numeric", second: "numeric" });
+
+    //     // Giới hạn số lượng mẫu dữ liệu trên biểu đồ D2201
+    //     if (temperatureDataD2201.length > 20) {
+    //         temperatureDataD2201.shift();
+    //         humidityDataD2201.shift();
+    //         labelsD2201.shift();
+    //     }
+
+    //     // Cập nhật biểu đồ D2201
+    //     chartD2201.update();
+    // }
+
+    // function updateDataKB104(dataKB104) {
+    //     var temperatureKB104 = document.getElementById("temperatureKB104");
+    //     var humidityKB104 = document.getElementById("humidityKB104");
+
+    //     temperatureKB104.innerHTML = dataKB104.temperature + "°C";
+    //     humidityKB104.innerHTML = dataKB104.humidity + "%";
+    //     // Thêm dữ liệu vào biểu đồ KB104
+    //     temperatureDataKB104.push(dataKB104.temperature);
+    //     humidityDataKB104.push(dataKB104.humidity);
+    //     labelsKB104.push(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", second: "numeric" }));
+
+    //     // Giới hạn số lượng mẫu dữ liệu trên biểu đồ KB104
+    //     if (temperatureDataKB104.length > 20) {
+    //         temperatureDataKB104.shift();
+    //         humidityDataKB104.shift();
+    //         labelsKB104.shift();
+    //     }
+
+    //     // Cập nhật biểu đồ KB104
+    //     chartKB104.update();
+    // }
+
+    // function updateDataKB105(dataKB105) {
+    //     var temperatureKB105 = document.getElementById("temperatureKB105");
+    //     var humidityKB105 = document.getElementById("humidityKB105");
+
+    //     temperatureKB105.innerHTML = dataKB105.temperature + "°C";
+    //     humidityKB105.innerHTML = dataKB105.humidity + "%";
+    //     // Thêm dữ liệu vào biểu đồ KB105
+    //     temperatureDataKB105.push(dataKB105.temperature);
+    //     humidityDataKB105.push(dataKB105.humidity);
+    //     labelsKB105.push(new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric", second: "numeric" }));
+
+    //     // Giới hạn số lượng mẫu dữ liệu trên biểu đồ KB105
+    //     if (temperatureDataKB105.length > 20) {
+    //         temperatureDataKB105.shift();
+    //         humidityDataKB105.shift();
+    //         labelsKB105.shift();
+    //     }
+
+    //     // Cập nhật biểu đồ KB105
+    //     chartKB105.update();
+    // }
+
+    // Cập nhật dữ liệu mỗi 5 giây cho cả D2101 và D2102...
+    setInterval(getDataFromServerD2101, 5000);
+    // setInterval(getDataFromServerD2102, 5000);
+    // setInterval(getDataFromServerD2103, 5000);
+    // setInterval(getDataFromServerD2104, 5000);
+    // setInterval(getDataFromServerD2201, 5000);
+    // setInterval(getDataFromServerKB104, 5000);
+    // setInterval(getDataFromServerKB105, 5000);
+
+    // Đảm bảo lấy dữ liệu ban đầu khi trang được tải
+    getDataFromServerD2101();
+    // getDataFromServerD2102();
+    // getDataFromServerD2103();
+    // getDataFromServerD2104();
+    // getDataFromServerD2201();
+    // getDataFromServerKB104();
+    // getDataFromServerKB105();
+
+//     function AirConditionerStateD2101() {
+//     var airConditionerCheckbox = document.getElementById("ACCheckboxD2101");
+//     var isChecked = airConditionerCheckbox.checked;
+// }
+function AirConditionerStateD2101(isChecked) {
+    var airConditionerCheckbox = document.getElementById("ACCheckboxD2101");
+    var isChecked = airConditionerCheckbox.checked ? 1 : 0;
+    fetch('https://dat.inotev.net/api/controlACD2101.php/', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'data=' + isChecked
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        // Handle the response data if needed
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+}
+
+    function AirConditionerStateD2102() {
+    var airConditionerCheckbox = document.getElementById("ACCheckboxD2102");
+    var isChecked = airConditionerCheckbox.checked;
+
+}
+
+    function AirConditionerStateD2103() {
+    var airConditionerCheckbox = document.getElementById("ACCheckboxD2103");
+    var isChecked = airConditionerCheckbox.checked;
+
+}
+
+    function AirConditionerStateD2104() {
+    var airConditionerCheckbox = document.getElementById("ACCheckboxD2104");
+    var isChecked = airConditionerCheckbox.checked;
+
+}
+
+    function AirConditionerStateD2201() {
+    var airConditionerCheckbox = document.getElementById("ACCheckboxD2201");
+    var isChecked = airConditionerCheckbox.checked;
+
+}
+
+    function AirConditionerStateKB104() {
+    var airConditionerCheckbox = document.getElementById("ACCheckboxKB104");
+    var isChecked = airConditionerCheckbox.checked;
+
+}
+
+    function AirConditionerStateKB105() {
+    var airConditionerCheckbox = document.getElementById("ACCheckboxKB105");
+    var isChecked = airConditionerCheckbox.checked;
+
+}
+
+    function openOverlay1() {
+      document.getElementById('overlay1').style.display = 'flex';
+    }
+    function openOverlay2() {
+      document.getElementById('overlay2').style.display = 'flex';
+    }
+    function openOverlay3() {
+      document.getElementById('overlay3').style.display = 'flex';
+    }
+    function openOverlay4() {
+      document.getElementById('overlay4').style.display = 'flex';
+    }
+    function openOverlay5() {
+      document.getElementById('overlay5').style.display = 'flex';
+    }
+    function openOverlay6() {
+      document.getElementById('overlay6').style.display = 'flex';
+    }
+    function openOverlay7() {
+      document.getElementById('overlay7').style.display = 'flex';
+    }
+    function closeOverlay1() {
+      document.getElementById('overlay1').style.display = 'none';
+    }
+    function closeOverlay2() {
+      document.getElementById('overlay2').style.display = 'none';
+    }
+    function closeOverlay3() {
+      document.getElementById('overlay3').style.display = 'none';
+    }
+    function closeOverlay4() {
+      document.getElementById('overlay4').style.display = 'none';
+    }
+    function closeOverlay5() {
+      document.getElementById('overlay5').style.display = 'none';
+    }
+    function closeOverlay6() {
+      document.getElementById('overlay6').style.display = 'none';
+    }
+    function closeOverlay7() {
+      document.getElementById('overlay7').style.display = 'none';
+    }
+
+
+     function AutoAirConditionerStateD2101() {
+    var airConditionerCheckbox = document.getElementById("auto-D2101");
+    var isChecked = airConditionerCheckbox.checked ? "AUTO" : "CONTROL";
+    fetch('https://dat.inotev.net/api/controlACD2101.php/', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'mode=' + isChecked
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data);
+        // Handle the response data if needed
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+
+    }
+    function AutoAirConditionerStateD2102() {
+        var airConditionerCheckbox = document.getElementById("auto-D2102");
+        var isChecked = airConditionerCheckbox.checked;
+    }
+    function AutoAirConditionerStateD2103() {
+        var airConditionerCheckbox = document.getElementById("auto-D2103");
+        var isChecked = airConditionerCheckbox.checked;
+    }
+    function AutoAirConditionerStateD2104() {
+        var airConditionerCheckbox = document.getElementById("auto-D2104");
+        var isChecked = airConditionerCheckbox.checked;
+    }
+    function AutoAirConditionerStateD2201() {
+        var airConditionerCheckbox = document.getElementById("auto-D2201");
+        var isChecked = airConditionerCheckbox.checked;
+    }
+    function AutoAirConditionerStateKB104() {
+        var airConditionerCheckbox = document.getElementById("auto-KB104");
+        var isChecked = airConditionerCheckbox.checked;
+    }
+    function AutoAirConditionerStateKB105() {
+        var airConditionerCheckbox = document.getElementById("auto-KB105");
+        var isChecked = airConditionerCheckbox.checked;
+
+    }
+
+    var currentIndexd2101 = 25;
+
+    function incrementIndex() {
+        currentIndexd2101 = (currentIndexd2101 === 30) ? currentIndexd2101 : ++currentIndexd2101;
+        // currentIndexd2101++;
+        document.getElementById("indexDisplayd2101").innerText = currentIndexd2101+"°C";
+        fetch('https://dat.inotev.net/api/controlACD2101.php/', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'data=i'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            // Handle the response data if needed
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    function decrementIndex() {
+        currentIndexd2101 = (currentIndexd2101 === 18) ? currentIndexd2101 : --currentIndexd2101;
+        document.getElementById("indexDisplayd2101").innerText = currentIndexd2101+"°C";
+        fetch('https://dat.inotev.net/api/controlACD2101.php/', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'data=d'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            // Handle the response data if needed
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    var currentIndexd2101d2102 = 25;
+
+    function incrementIndex2() {
+        currentIndexd2101d2102 = (currentIndexd2101d2102 === 30) ? currentIndexd2101d2102 : ++currentIndexd2101d2102;
+        // currentIndexd2101++;
+        document.getElementById("indexDisplayd2102").innerText = currentIndexd2101d2102+"°C";
+    }
+
+    function decrementIndex2() {
+        currentIndexd2101d2102 = (currentIndexd2101d2102 === 18) ? currentIndexd2101d2102 : --currentIndexd2101d2102;
+        document.getElementById("indexDisplayd2102").innerText = currentIndexd2101d2102+"°C";
+    }
+    var currentIndexd2101d2103 = 25;
+
+    function incrementIndex3() {
+        currentIndexd2101d2103 = (currentIndexd2101d2103 === 30) ? currentIndexd2101d2103 : ++currentIndexd2101d2103;
+        // currentIndexd2101++;
+        document.getElementById("indexDisplayd2103").innerText = currentIndexd2101d2103+"°C";
+    }
+
+    function decrementIndex3() {
+        currentIndexd2101d2103 = (currentIndexd2101d2103 === 18) ? currentIndexd2101d2103 : --currentIndexd2101d2103;
+        document.getElementById("indexDisplayd2103").innerText = currentIndexd2101d2103+"°C";
+    }
+    var currentIndexd2101d2104 = 25;
+    function incrementIndex4() {
+        currentIndexd2101d2104 = (currentIndexd2101d2104 === 30) ? currentIndexd2101d2104 : ++currentIndexd2101d2104;
+        // currentIndexd2101++;
+        document.getElementById("indexDisplayd2104").innerText = currentIndexd2101d2104+"°C";
+    }
+
+    function decrementIndex4() {
+        currentIndexd2101d2104 = (currentIndexd2101d2104 === 18) ? currentIndexd2101d2104 : --currentIndexd2101d2104;
+        document.getElementById("indexDisplayd2104").innerText = currentIndexd2101d2104+"°C";
+    }
+
+    var currentIndexd2101d2105 = 25;
+    function incrementIndex5() {
+        currentIndexd2101d2105 = (currentIndexd2101d2105 === 30) ? currentIndexd2101d2105 : ++currentIndexd2101d2105;
+        // currentIndexd2101++;
+        document.getElementById("indexDisplayd2105").innerText = currentIndexd2101d2105+"°C";
+    }
+
+    function incrementIndex5() {
+        currentIndexd2101d2105 = (currentIndexd2101d2105 === 18) ? currentIndexd2101d2105 : --currentIndexd2101d2105;
+        document.getElementById("indexDisplayd2105").innerText = currentIndexd2101d2105+"°C";
+    }
+
+    var currentIndexd2101d2106 = 25;
+    function incrementIndex6() {
+        currentIndexd2101d2106 = (currentIndexd2101d2106 === 30) ? currentIndexd2101d2106 : ++currentIndexd2101d2106;
+        // currentIndexd2101++;
+        document.getElementById("indexDisplayd2106").innerText = currentIndexd2101d2106+"°C";
+    }
+
+    function incrementIndex6() {
+        currentIndexd2101d2106 = (currentIndexd2101d2106 === 18) ? currentIndexd2101d2106 : --currentIndexd2101d2106;
+        document.getElementById("indexDisplayd2106").innerText = currentIndexd2101d2106+"°C";
+    }
+
+    var currentIndexd2101d2107 = 25;
+    function incrementIndex7() {
+        currentIndexd2101d2107 = (currentIndexd2101d2107 === 30) ? currentIndexd2101d2107 : ++currentIndexd2101d2107;
+        // currentIndexd2101++;
+        document.getElementById("indexDisplayd2107").innerText = currentIndexd2101d2107+"°C";
+    }
+
+    function incrementIndex7() {
+        currentIndexd2101d2107 = (currentIndexd2101d2107 === 18) ? currentIndexd2101d2107 : --currentIndexd2101d2107;
+        document.getElementById("indexDisplayd2107").innerText = currentIndexd2101d2107+"°C";
+    }
+  </script>
+
+</body>
+</html>

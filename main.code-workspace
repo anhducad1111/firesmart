@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Udemy/learnC"
+		},
+		{
+			"name": "STM32_test",
+			"path": "../STM32_test"
+		},
+		{
+			"path": "../2024/test"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "firesmart"
+	}
+}
